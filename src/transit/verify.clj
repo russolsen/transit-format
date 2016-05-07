@@ -337,6 +337,7 @@
                    project
                    (name encoding)))
   (let [command (str "../" project "/bin/roundtrip")]
+    (println "Running command " command)
     (report (-> (verify-impl-encoding command encoding opts)
                 (assoc :project project)))))
 
@@ -367,10 +368,9 @@
                 (take n (repeatedly gen/ednable)))]
     (doseq [impl impls]
       (if (supported-impls impl)
-        (do
           (println (clojure.string/trim-newline (:out (shell/sh (str "bin/get-" impl)))))
-          (verify-encodings impl (assoc opts :generated-forms forms)))
-        (println (with-style :yellow "WARNING: " impl " is not supported"))))))
+          (println (with-style :yellow "WARNING: " impl " is not offically supported. Will try to verify anyway.")))
+          (verify-encodings impl (assoc opts :generated-forms forms)))))
 
 (defn read-options
   "Given a sequence of strings which are the command line arguments,
